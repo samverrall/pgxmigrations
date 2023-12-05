@@ -2,7 +2,7 @@
 
 # pgmigrations - PostgresSQL Migrations in Go with The PGX Driver and Toolkit
 
-## Example Usuage 
+## Example Usage 
 
 ```go 
 func main () {
