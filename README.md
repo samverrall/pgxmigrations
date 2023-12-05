@@ -1,4 +1,4 @@
-[![Go Reference](https://pkg.go.dev/badge/github.com/samverrall/pgmigrations.svg)](https://pkg.go.dev/github.com/samverrall/pgmigrations)
+[![Go Reference](https://pkg.go.dev/badge/github.com/samverrall/pgxmigrations.svg)](https://pkg.go.dev/github.com/samverrall/pgxmigrations)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/samverrall/pgxmigrations/blob/main/LICENSE)
 [![GitHub Release](https://img.shields.io/github/release/samverrall/pgxmigrations.svg)](https://github.com/samverrall/pgxmigrations/releases)
 
