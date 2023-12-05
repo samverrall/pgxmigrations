@@ -2,6 +2,7 @@ package pgxmigrations
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -49,7 +50,10 @@ func NewMigrator(migrationsDir string, db DB, opts ...OptFunc) *Migrator {
 func (m *Migrator) setQueriesFromDir() error {
 	migrations, err := os.ReadDir(m.dir)
 	if err != nil {
-		return err
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("supplied migrations directory does not exist: %s", m.dir)
+		}
+		return fmt.Errorf("read migrations dir: %w", err)
 	}
 
 	queries := make([]string, len(migrations))
