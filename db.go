@@ -13,6 +13,4 @@ type DB interface {
 	QueryRow(ctx context.Context, sql string, optionsAndArgs ...any) pgx.Row
 
 	Begin(context.Context) (pgx.Tx, error)
-	Rollback() error
-	Commit() error
 }
