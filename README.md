@@ -12,7 +12,7 @@ func main () {
 
 	conn, err := pgx.Connect(ctx, postgresConnectionURL)
 	if err != nil {
-		return err
+		log.Fatal("failed to connect to postgres", err)
 	}
 
 	migrator := pgxmigrations.NewMigrator("/path/to/migrations", conn, pgxmigrations.WithLogging(true))
@@ -20,6 +20,12 @@ func main () {
 		log.Fatal("failed to migrate postgres migrations", err)
 	}
 }
+```
+
+## Install
+
+```
+go get -u github.com/samverrall/pgxmigrations@latest
 ```
 
 ### ⚠️ Pre-release Notice ⚠️
