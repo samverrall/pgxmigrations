@@ -179,6 +179,7 @@ CREATE TABLE IF NOT EXISTS _migrations (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
+ALTER TABLE _migrations ADD CONSTRAINT unique_version UNIQUE (version);
 
 INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
 	`
