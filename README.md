@@ -10,12 +10,16 @@
 func main () {
 	ctx := context.Background()
 
-	migrator := pgxmigrations.NewMigrator("/migrations/dir", pgx.DB, pgxmigrations.WithDebugLogging(true))
+	conn, err := pgx.Connect(ctx, postgresConnectionURL)
+	if err != nil {
+		return err
+	}
+
+	migrator := pgxmigrations.NewMigrator("/path/to/migrations", conn, pgxmigrations.WithLogging(true))
 	if err := migrator.Migrate(ctx); err != nil {
-		fmt.Fatal("failed to migrate postgres migrations", err)
+		log.Fatal("failed to migrate postgres migrations", err)
 	}
 }
-
 ```
 
 ### ⚠️ Pre-release Notice ⚠️
