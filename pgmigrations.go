@@ -180,7 +180,7 @@ func createMigrationsTbl(ctx context.Context, tx pgx.Tx) error {
 			updated_at DATETIME
 		);
 
-		INSERT OR IGNORE INTO _migrations (version) VALUES (0);
+		INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
 	`
 
 	if _, err := tx.Exec(ctx, stmt); err != nil {
