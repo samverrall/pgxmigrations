@@ -147,7 +147,7 @@ func (m *Migrator) migrate(ctx context.Context) error {
 			continue
 		}
 		if _, err := tx.Exec(ctx, stmt); err != nil {
-			return err
+			return fmt.Errorf("migration: %d: %w", i, err)
 		}
 
 		migration++
