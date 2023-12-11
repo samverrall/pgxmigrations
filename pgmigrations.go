@@ -14,7 +14,7 @@ import (
 
 type Migrator struct {
 	dir           string
-	debugLogging  bool
+	logging       bool
 	internalTable bool
 	logger        *logger
 	inst          *migratorInst
@@ -40,14 +40,17 @@ func NewMigrator(migrationsDir string, db DB, opts ...OptFunc) *Migrator {
 		opt(m)
 	}
 
-	if m.debugLogging {
+	if m.logging {
 		m.logger.enable()
+		m.logger.Debug("debug logging enabled")
 	}
 
 	return m
 }
 
 func (m *Migrator) setQueriesFromDir() error {
+	m.logger.Info("reading migrations from dir", "dir", m.dir)
+
 	migrations, err := os.ReadDir(m.dir)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {

@@ -1,6 +1,9 @@
 package pgxmigrations
 
-import "log/slog"
+import (
+	"fmt"
+	"log/slog"
+)
 
 // logger wraps a slog logger, and a enable flog.
 // by default logging is disabled, and can be enabled by using
@@ -24,5 +27,19 @@ func (l *logger) Debug(msg string, args ...any) {
 	if !l.enabled {
 		return
 	}
-	l.logger.Debug(msg, args...)
+	l.logger.Debug(fmt.Sprintf("[pgxmigrations]: %s", msg), args...)
+}
+
+func (l *logger) Info(msg string, args ...any) {
+	if !l.enabled {
+		return
+	}
+	l.logger.Info(fmt.Sprintf("[pgxmigrations]: %s", msg), args...)
+}
+
+func (l *logger) Error(msg string, args ...any) {
+	if !l.enabled {
+		return
+	}
+	l.logger.Error(fmt.Sprintf("[pgxmigrations]: %s", msg), args...)
 }

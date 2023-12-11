@@ -12,7 +12,7 @@ type DB interface {
 	Query(ctx context.Context, sql string, optionsAndArgs ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, optionsAndArgs ...any) pgx.Row
 
-	Begin() (pgx.Tx, error)
+	Begin(context.Context) (pgx.Tx, error)
 	Rollback() error
 	Commit() error
 }

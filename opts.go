@@ -2,9 +2,11 @@ package pgxmigrations
 
 type OptFunc func(m *Migrator)
 
-func WithDebugLogging(debugLogging bool) OptFunc {
+// WithLogging can be passed to `NewMigrator` to optionally enable logging.
+// Logging is disabled by default.
+func WithLogging(enableLogging bool) OptFunc {
 	return func(m *Migrator) {
-		m.debugLogging = debugLogging
+		m.logging = enableLogging
 	}
 }
 
