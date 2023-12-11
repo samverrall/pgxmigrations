@@ -174,13 +174,13 @@ func (m *Migrator) migrate(ctx context.Context) error {
 
 func createMigrationsTbl(ctx context.Context, tx pgx.Tx) error {
 	stmt := `
-		CREATE TABLE IF NOT EXISTS _migrations (
-			version    INTEGER NOT NULL,
-			created_at DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', CURRENT_TIMESTAMP)),
-			updated_at DATETIME
-		);
+CREATE TABLE IF NOT EXISTS _migrations (
+    version    INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
 
-		INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
+INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
 	`
 
 	if _, err := tx.Exec(ctx, stmt); err != nil {
