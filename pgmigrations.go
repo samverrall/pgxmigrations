@@ -98,7 +98,7 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		return nil
 	}
 
-	tx, err := m.inst.db.Begin()
+	tx, err := m.inst.db.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin tx: %w", err)
 	}
