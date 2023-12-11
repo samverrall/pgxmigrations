@@ -16,6 +16,7 @@ type logger struct {
 func newLogger(enabled bool) *logger {
 	return &logger{
 		enabled: enabled,
+		logger:  slog.Default(),
 	}
 }
 
