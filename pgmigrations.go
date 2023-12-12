@@ -13,11 +13,11 @@ import (
 )
 
 type Migrator struct {
-	dir           string
-	logging       bool
-	internalTable bool
-	logger        *logger
-	inst          *migratorInst
+	dir                string
+	logging            bool
+	disableForeignKeys bool
+	logger             *logger
+	inst               *migratorInst
 }
 
 type migratorInst struct {
@@ -140,9 +140,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		return nil
 	}
 
-	if err := disableForeignKeys(ctx, tx); err != nil {
-		m.logger.Error("failed to disable foreign keys", "error", err)
-		return fmt.Errorf("failed to disable foreign keys: %w", err)
+	if m.disableForeignKeys {
+		if err := disableForeignKeys(ctx, tx); err != nil {
+			m.logger.Error("failed to disable foreign keys", "error", err)
+			return fmt.Errorf("failed to disable foreign keys: %w", err)
+		}
 	}
 
 	for i, stmt := range migrations {
@@ -162,9 +164,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		migration++
 	}
 
-	if err := enableForeignKeys(ctx, tx); err != nil {
-		m.logger.Error("failed to enable foreign keys", "error", err)
-		return fmt.Errorf("failed to enable foreign keys: %w", err)
+	if m.disableForeignKeys {
+		if err := enableForeignKeys(ctx, tx); err != nil {
+			m.logger.Error("failed to enable foreign keys", "error", err)
+			return fmt.Errorf("failed to enable foreign keys: %w", err)
+		}
 	}
 
 	// If the migration number is greater than the starting version then

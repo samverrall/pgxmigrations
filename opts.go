@@ -10,8 +10,11 @@ func WithLogging(enableLogging bool) OptFunc {
 	}
 }
 
-func WithInternalTable(withInternalTable bool) OptFunc {
+// WithDisableForeignKeys configures the Migrator to disable
+// foreign key constraints during the migration process if the provided 'disable'
+// parameter is set to true.
+func WithDisableForeignKeys(disable bool) OptFunc {
 	return func(m *Migrator) {
-		m.internalTable = withInternalTable
+		m.disableForeignKeys = disable
 	}
 }
