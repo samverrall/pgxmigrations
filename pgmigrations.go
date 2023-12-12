@@ -102,6 +102,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("begin tx: %w", err)
 	}
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil && !errors.Is(err, pgx.ErrTxClosed) {
+			m.logger.Error("rollback", "error", err)
+		}
+	}()
 	defer tx.Rollback(ctx)
 
 	if err := createMigrationsTbl(ctx, tx); err != nil {
@@ -136,6 +141,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		return nil
 	}
 
+	if err := disableForeignKeys(ctx, tx); err != nil {
+		m.logger.Error("failed to disable foreign keys", "error", err)
+		return fmt.Errorf("failed to disable foreign keys: %w", err)
+	}
+
 	for i, stmt := range migrations {
 		if i < version {
 			continue
@@ -151,6 +161,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		}
 
 		migration++
+	}
+
+	if err := enableForeignKeys(ctx, tx); err != nil {
+		m.logger.Error("failed to enable foreign keys", "error", err)
+		return fmt.Errorf("failed to enable foreign keys: %w", err)
 	}
 
 	// If the migration number is greater than the starting version then
@@ -169,6 +184,22 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		}
 	}
 
+	return nil
+}
+
+func disableForeignKeys(ctx context.Context, tx pgx.Tx) error {
+	_, err := tx.Exec(ctx, "SET session_replication_role = replica;")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func enableForeignKeys(ctx context.Context, tx pgx.Tx) error {
+	_, err := tx.Exec(ctx, "SET session_replication_role = origin;")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
