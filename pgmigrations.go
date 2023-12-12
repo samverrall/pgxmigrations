@@ -107,7 +107,6 @@ func (m *Migrator) migrate(ctx context.Context) error {
 			m.logger.Error("rollback", "error", err)
 		}
 	}()
-	defer tx.Rollback(ctx)
 
 	if err := createMigrationsTbl(ctx, tx); err != nil {
 		return err
@@ -182,6 +181,11 @@ func (m *Migrator) migrate(ctx context.Context) error {
 		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
 			return err
 		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		m.logger.Error("commit", "error", err)
+		return fmt.Errorf("commit: %w", err)
 	}
 
 	return nil
