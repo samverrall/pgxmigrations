@@ -214,11 +214,10 @@ func enableForeignKeys(ctx context.Context, tx pgx.Tx) error {
 func createMigrationsTbl(ctx context.Context, tx pgx.Tx) error {
 	stmt := `
 CREATE TABLE IF NOT EXISTS _migrations (
-    version    INTEGER NOT NULL,
+    version    INTEGER NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
-ALTER TABLE _migrations ADD CONSTRAINT unique_version UNIQUE (version);
 
 INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
 	`
