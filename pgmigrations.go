@@ -114,7 +114,12 @@ func (m *Migrator) migrate(ctx context.Context) error {
 
 	var count int
 	if err := tx.QueryRow(ctx, "SELECT COUNT(1) FROM _migrations;").Scan(&count); err != nil {
-		return err
+		_, err := tx.Exec(ctx, "INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;")
+		if err != nil {
+			m.logger.Error("failed to insert intial migration value", "error", err)
+			return fmt.Errorf("inserting initial 0 version: exec: %w", err)
+		}
+		count = 0
 	}
 
 	var version int
@@ -219,7 +224,6 @@ CREATE TABLE IF NOT EXISTS _migrations (
     updated_at TIMESTAMP
 );
 
-INSERT INTO _migrations (version) VALUES (0) ON CONFLICT (version) DO NOTHING;
 	`
 
 	if _, err := tx.Exec(ctx, stmt); err != nil {
